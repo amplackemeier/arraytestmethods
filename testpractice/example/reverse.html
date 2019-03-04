@@ -1,0 +1,93 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // reverses an array in place. The first array element becomes the last,
+  // and the last array element becomes the first.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  //   var array1 = ['one', 'two', 'three'];
+  //   console.log('array1: ', array1);
+  // // expected output: Array ['one', 'two', 'three']
+  //
+  //   var reversed = array1.reverse();
+  //   console.log('reversed: ', reversed);
+  // // expected output: Array ['three', 'two', 'one']
+  //
+  // /* Careful: reverse is destructive. It also changes
+  // the original array */
+  // console.log('array1: ', array1);
+  // // expected output: Array ['three', 'two', 'one']
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- array.reverse()
+  // OUR FUNCTION -- reverse(array);
+
+
+  //-------------RETURN VALUE---------------
+
+  // The reversed array.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function reverse(array) {
+    var startingIndex = array.length - 1;
+    var newArray = [];
+
+    for (var i = startingIndex; i >= 0; i--) {
+      newArray.push(array[i]);
+    }
+
+    for (var i = 0; i < array.length; i++) {
+      if (i in array) {
+        array[i] = newArray[i];
+      } else {
+        delete array[i];
+      }
+    }
+
+
+    return array;
+  }
+
+
+  tests({
+    'It should return the array it was called upon.': function() {
+      var testArray = [1, 2, 3];
+      var result = reverse(testArray);
+      eq(Array.isArray(result) === true, true);
+    },
+    'It should return the array with its elements in reverse order.': function() {
+      var testArray = [1, 2, 3];
+      reverse(testArray);
+      eq(testArray[0], 3);
+      eq(testArray[1], 2);
+      eq(testArray[2], 1);
+    },
+    'It should work on arrays which contain null and undefined in any position.': function() {
+      var testArray1 = [null, 1];
+      var testArray2 = [undefined, 1];
+      reverse(testArray1);
+      reverse(testArray2);
+      eq(testArray1[0], 1);
+      eq(testArray1[1], null);
+      eq(testArray2[0], 1);
+      eq(testArray2[1], undefined);
+    },
+    'It should not skip holes.': function() {
+      var testArray = [, 1, 2, , 3, , ];
+      reverse(testArray);
+      eq(0 in testArray, false);
+      eq(1 in testArray, true);
+      eq(2 in testArray, true);
+      eq(3 in testArray, false);
+      eq(4 in testArray, true);
+    }
+  });
+</script>

@@ -1,0 +1,103 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // creates and returns a new string by concatenating all of the elements
+  // in an array (or an array-like object), separated by commas or a specified
+  // separator string. If the array has only one item, then that item will be
+  // returned without using the separator.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var elements = ['Fire', 'Wind', 'Rain'];
+  //
+  // console.log(elements.join());
+  // // expected output: "Fire,Wind,Rain"
+  //
+  // console.log(elements.join(''));
+  // // expected output: "FireWindRain"
+  //
+  // console.log(elements.join('-'));
+  // // expected output: "Fire-Wind-Rain"
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD --arr.join([separator])
+  // OUR FUNCTION -- join(array[, separator]);
+
+
+  //-------------RETURN VALUE---------------
+
+  // A string with all array elements joined. If arr.length is 0, the empty string is returned.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function join(array, separator) {
+    var joinedString = "";
+
+
+    if (arguments.length === 2) {
+      var stringSeparator = separator;
+    }
+
+    for (var i = 0; i < array.length; i++) {
+      if (joinedString === "") { // to remove " ," at beginning of return statement.
+        joinedString = array[i];
+      } else if (stringSeparator === "") {
+        joinedString = joinedString + "" + array[i];
+      } else if (stringSeparator) {
+        joinedString = joinedString + stringSeparator + array[i];
+      } else {
+        joinedString = joinedString + ',' + array[i];
+      }
+    }
+    return joinedString;
+  }
+
+  tests({
+    'It should return a single string.': function() {
+      var testArray = [];
+      var result = join(testArray);
+      eq(typeof result === 'string', true);
+    },
+    'The returned string should contain all array elements concatenated.': function() {
+      var testArray = [1, 2, 3];
+      var result = join(testArray);
+      eq(result, '1,2,3');
+    },
+    'If array.length = 0, it should return an empty string.': function() {
+      var testArray = [];
+      var result = join(testArray);
+      eq(result, '');
+    },
+    'If array.length = 1, it should return the only element in array.': function() {
+      var testArray = [1];
+      var result = join(testArray);
+      eq(result, '1');
+    },
+    'If no separator, and array.length > 1, all elements in returned string should be separated by commas.': function() {
+      var testArray = [1, 2, 3];
+      var result = join(testArray);
+      eq(result, '1,2,3');
+    },
+    'If separator, it should return all elements separated as indicated by separator.': function() {
+      var testArray = [1, 2, 3];
+      var result = join(testArray, "-");
+      eq(result, '1-2-3');
+    },
+    'If separator is an empty string, it should join all elements with nothing in between them.': function() {
+      var testArray = [1, 2, 3];
+      var result = join(testArray, "");
+      eq(result, '123');
+    },
+    'If an element in array is undefined, null, or a hole, it should be concatenated as an empty string.': function() {
+      var testUndefinedArray = [undefined, undefined];
+      var result = join(testUndefinedArray);
+      eq(result, ',');
+    },
+  });
+</script>

@@ -1,0 +1,137 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // Merges two or more arrays. This method does not
+  // change the existing arrays, but instead returns a new array.
+
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var array1 = ['a', 'b', 'c'];
+  // var array2 = ['d', 'e', 'f'];
+
+  // console.log(array1.concat(array2));
+  // expected output: Array ["a", "b", "c", "d", "e", "f"]
+
+
+  //-------------PROTOTYPE IMPLEMENTATION---------------
+
+  // function concat(array1, array2) {
+  //   var newArray = [];
+  //   for (var i = 0; i < arguments.length; i++) {
+  //     var activeElement = arguments[i];
+  //     if (Array.isArray(activeElement)) {
+  //       for (var j = 0; j < activeElement.length; j++) {
+  //         newArray.push(activeElement[j]);
+  //       }
+  //     }
+  //   }
+  //   return newArray;
+  // }
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- var new_array = old_array.concat([value1[, value2[, ...[, valueN]]]]);
+  // OUR FUNCTION -- function concat([value1[, value2[, ...[, valueN]]]]);
+
+
+  //-------------RETURN VALUE---------------
+
+  // A new array
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function concat(array1, array2) {
+    var newArray = [];
+    for (var i = 0; i < arguments.length; i++) {
+      var activeElement = arguments[i];
+      if (Array.isArray(activeElement)) {
+        for (var j = 0; j < activeElement.length; j++) {
+          newArray.push(activeElement[j]);
+        }
+      } else {
+        newArray.push(activeElement);
+      }
+    }
+    return newArray;
+  }
+
+
+  tests({
+    'It should copy each element on each argument passed into function into a new array.': function() {
+      var testResult = concat([1, 2], [3, 4]);
+      eq(Array.isArray(testResult), true);
+      eq(testResult.length, 4);
+    },
+    'The new array should consist of each arguments elements in order.': function() {
+      var testResult = concat([1, 2], [3, 4]);
+      eq(testResult[0], 1);
+      eq(testResult[1], 2);
+      eq(testResult[2], 3);
+      eq(testResult[3], 4);
+    },
+    'It should not mutate the original arguments.': function() {
+      var array1 = [1, 2];
+      var array2 = [3, 4];
+      concat(array1, array2);
+      eq(array1[0], 1);
+      eq(array1[1], 2);
+      eq(array2[0], 3);
+      eq(array2[1], 4);
+    },
+    'If only one argument is provided, it should return that argument.': function() {
+      var array1 = [1, 2];
+      var testResult = concat(array1);
+      eq(testResult.length, array1.length);
+      eq(testResult[0], 1);
+      eq(testResult[1], 2);
+    },
+    'It should copy strings into the new array.': function() {
+      var array1 = [1, 2];
+      var string1 = ['abc'];
+      var testResult = concat(array1, string1);
+      eq(Array.isArray(testResult), true);
+      eq(testResult[2], 'abc');
+    },
+    'It should copy Booleans into the new array.': function() {
+      var array1 = [1, 2];
+      var boolean1 = false;
+      var testResult = concat(array1, boolean1);
+      eq(Array.isArray(testResult), true);
+      eq(testResult[2], false);
+    },
+    'It should copy holes as undefined.': function() {
+      var array1 = [1, 2];
+      var holesArray = [, , ];
+      var testResult = concat(array1, holesArray);
+      eq(Array.isArray(testResult), true);
+      eq(testResult[2], undefined);
+      eq(testResult[3], undefined);
+    },
+    'It should not recurse into nested array arguments.': function() {
+      var array1 = [1, 2];
+      var array2 = [
+        [3, 4], 5
+      ];
+      var testResult = concat(array1, array2);
+      eq(Array.isArray(testResult), true);
+      eq(Array.isArray(testResult[2]), true);
+      eq(testResult.length, 4);
+      eq(testResult[2].length, 2);
+    },
+    'It should copy object references into the new array.': function() {
+      var array1 = [1, 2];
+      var country = {
+        name: 'USA'
+      };
+      var testResult = concat(array1, country);
+      eq(Array.isArray(testResult), true);
+      eq(testResult[2].name, 'USA');
+    }
+  });
+</script>

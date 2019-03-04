@@ -1,0 +1,81 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // removes the first element from an array and returns
+  // that removed element. This method changes the length of the array.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var array1 = [1, 2, 3];
+  //
+  // var firstElement = array1.shift();
+  //
+  // console.log(array1);
+  // // expected output: Array [2, 3]
+  //
+  // console.log(firstElement);
+  // // expected output: 1
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.shift()
+  // OUR FUNCTION -- function shift(array)
+
+
+  //-------------RETURN VALUE---------------
+
+  // The removed element from the array; undefined if the array is empty.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function shift(array) {
+    if (array.length === 0 || array[0] === undefined) {
+      return undefined;
+    }
+    if (array[0] === null) {
+      return null;
+    }
+
+    var returnElement = array.splice(0, 1);
+    return returnElement;
+  }
+
+
+  tests({
+    'It should remove the element from provided array at index zero.': function() {
+      var testArray = [1, 2, 3];
+      var result = shift(testArray);
+      eq(testArray[0], 2);
+      eq(testArray[1], 3);
+    },
+    'It should return the removed element.': function() {
+      var testArray = [1, 2, 3];
+      var result = shift(testArray);
+      eq(result, 1);
+    },
+    'If provided array.length is zero, it should return undefined.': function() {
+      var testArray = [];
+      var result = shift(testArray);
+      eq(result, undefined);
+    },
+    'If element at index[0] is null or undefined, it should return null or undefined.': function() {
+      var nullTestArray = [null];
+      var undefinedTestArray = [undefined];
+      var nullResult = shift(nullTestArray);
+      var undefinedResult = shift(undefinedTestArray);
+      eq(nullResult, null);
+      eq(undefinedResult, undefined);
+    },
+    'The original array should not contain the removed element after function is run.': function() {
+      var testArray = [1, 2, 3];
+      var result = shift(testArray);
+      eq(testArray[0], 2);
+      eq(testArray[1], 3);
+    }
+  });
+</script>

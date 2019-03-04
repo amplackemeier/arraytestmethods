@@ -1,0 +1,71 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // adds one or more elements to the beginning of an array
+  // and returns the new length of the array.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  //   var array1 = [1, 2, 3];
+  //
+  // console.log(array1.unshift(4, 5));
+  // // expected output: 5
+  //
+  // console.log(array1);
+  // // expected output: Array [4, 5, 1, 2, 3]
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.unshift(element1[, ...[, elementN]])
+  // OUR FUNCTION -- function unshift(array, element1[, ...[, elementN]]);
+
+
+  //-------------RETURN VALUE---------------
+
+  // The new length property of the object upon which the method was called.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function unshift(array, element) {
+    var newArray = array;
+
+    if (arguments.length > 1) {
+      for (var i = arguments.length - 1; i >= 1; i--) {
+        newArray.splice(0, 0, arguments[i]);
+      }
+    }
+    return newArray.length;
+  }
+
+
+  tests({
+    'It should add element to the beginning of provided array.': function() {
+      var testArray = [1, 2, 3];
+      unshift(testArray, 2);
+      eq(testArray[0], 2);
+      eq(testArray[1], 1);
+      eq(testArray[2], 2);
+      eq(testArray[3], 3);
+    },
+    'It should accept multiple elements, it should add them in the order they are passed as parameters.': function() {
+      var testArray = [4, 5, 6];
+      unshift(testArray, 1, 2, 3);
+      eq(testArray[0], 1);
+      eq(testArray[1], 2);
+      eq(testArray[2], 3);
+      eq(testArray[3], 4);
+      eq(testArray[4], 5);
+      eq(testArray[5], 6);
+    },
+    'It should return the length of array with the added elements.': function() {
+      var testArray = [4, 5, 6];
+      var result = unshift(testArray, 1, 2, 3);
+      eq(result, 6);
+    }
+  });
+</script>

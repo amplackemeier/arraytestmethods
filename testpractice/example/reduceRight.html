@@ -1,0 +1,198 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // Applies a function against an accumulator and each
+  // value of the array (from right-to-left) to reduce it to a single value.
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var array1 = [1, 2, 3, 4];
+  // array1.reduceRight(function(a, b) {
+  //   return a + b;
+  // });
+  // Expected output: 10
+
+
+  //-------------PROTOTYPE IMPLEMENTATION---------------
+
+  // function reduceRight(array, callback, startingValue) {
+  //   var accumulator = startingValue;
+  //   for (var i = array.length - 1; i >= 0; i--) {
+  //     accumulator = callback(accumulator, array[i], i, array);
+  //   }
+  //   return accumulator;
+  // }
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD --- arr.reduceRight(callback[, initialValue])
+  // OUR FUNCTION --- reduceRight(array, callback[, initialValue])
+
+
+
+  //-------------CALLBACK PARAMETERS---------------
+
+  // accumulator (resultSoFar above)
+  // currentValue (array[i] above)
+  // currentIndex (i)
+  // array (array)
+
+
+  //-------------RETURN VALUE---------------
+  // Returns a single value
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function reduceRight(array, callback, initialValue) {
+
+
+    var startingIndex = array.length - 1;
+    var accumulator = initialValue;
+
+    // No initialValue
+    if (arguments.length < 3) {
+      //If array is empty, throw typeError
+      if (Object.keys(array).length === 0) {
+        throw new TypeError('Reduce of empty array but no initial value');
+      }
+
+      // If array has one element, just return it.
+      if (Object.keys(array).length === 1) {
+        var onlyIndex = Object.keys(array)[0];
+        var onlyElement = array[onlyIndex];
+        return onlyElement;
+      }
+
+      // Want to skip holes at end of array.
+      while (startingIndex in array === false && startingIndex >= 0) {
+        startingIndex--;
+      }
+
+      accumulator = array[startingIndex];
+      startingIndex--;
+
+      // Has initialValue
+    } else {
+      if (Object.keys(array).length === 0) {
+        return initialValue;
+      }
+    }
+
+    for (var i = startingIndex; i >= 0; i--) {
+      if (i in array) {
+        accumulator = callback(accumulator, array[i], i, array);
+      }
+    }
+    return accumulator;
+  }
+
+
+
+
+  tests({
+    'If initialValue, callback should run array.length times.': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      reduceRight([1, 2, 3], function() {
+        numberOfTimesCallbackHasRun++;
+      }, 0);
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    'If no initialValue, callback should run array.length - 1 times.': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      reduceRight([1, 2, 3], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+    },
+    'If initialValue, accumulator should start with initialValue.': function() {
+      reduceRight([1], function(accumulator) {
+        eq(accumulator, 0);
+      }, 0);
+    },
+    'If initialValue, currentValue should start at array[array.length -1].': function() {
+      reduceRight([1], function(accumulator, currentValue) {
+        eq(currentValue, 1);
+      }, 0);
+    },
+    'If intialValue, callback should start at array.length - 1.': function() {
+      reduceRight([1], function(accumulator, currentValue, currentIndex) {
+        eq(currentIndex, 0);
+      }, 0);
+    },
+    'If no initialValue, accumulator should start with array[array.length -1].': function() {
+      reduceRight([1, 2], function(accumulator) {
+        eq(accumulator, 2);
+      });
+    },
+    'If no initialValue, currentValue should start at array[array.length - 2].': function() {
+      reduceRight([1, 2], function(accumulator, currentValue) {
+        eq(currentValue, 1);
+      });
+    },
+    'If no initialValue, callback should start at array.length - 2.': function() {
+      reduceRight([1, 2], function(accumulator, currentValue, currentIndex) {
+        eq(currentIndex, 0);
+      });
+    },
+    'If initialValue and array is empty, return initialValue without calling callback.': function() {
+      var initialValue = 0;
+      var numberOfTimesCallbackHasRun = 0;
+      var reduceRightResult = reduceRight([, , ], function() {
+        numberOfTimesCallbackHasRun++;
+      }, initialValue);
+      eq(reduceRightResult, initialValue);
+      eq(numberOfTimesCallbackHasRun, 0);
+    },
+    'If no intialValue, and the array has one element, it should return only element without calling callback.': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      var reduceRightResult = reduceRight([1], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(reduceRightResult, 1);
+      eq(numberOfTimesCallbackHasRun, 0)
+    },
+    'It should actually reduce.': function() {
+      var sum = reduceRight([1, 2, 3], function(a, b) {
+        return a + b;
+      }, 0);
+      eq(sum, 6);
+    },
+    'It should reduce from right to left': function() {
+      var concatenatedString = reduceRight(['i', 'should', 'be', 'backwards'], function(a, b) {
+        return a + b;
+      });
+      eq(concatenatedString, 'backwardsbeshouldi');
+    },
+    'If initial value, it should exclude holes.': function() {
+      var sum = reduceRight([, 1, , 2, 3, ], function(a, b) {
+        return a + b;
+      }, 0);
+      eq(sum, 6);
+    },
+    'If no initial value, it should exclude holes too.': function() {
+      var sum = reduceRight([, 1, , 2, 3, , ], function(a, b) {
+        return a + b;
+      });
+      eq(sum, 6);
+    },
+    'If array is empty, and no initialValue, throw typeError.': function() {
+      var isTypeError = false;
+      try {
+        reduceRight([], function() {})
+      } catch (e) {
+        isTypeError = (e instanceof TypeError);
+      }
+      eq(isTypeError, true);
+    },
+    'It should pass array as 4th argument to callback.': function() {
+      var testArray = [1, 2, 3];
+      reduceRight(testArray, function(accumulator, currentValue, currentIndex, array) {
+        eq(testArray, array);
+      });
+    }
+  });
+</script>

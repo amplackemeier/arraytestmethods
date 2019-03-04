@@ -1,0 +1,69 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // removes the last element from an array and returns that element.
+  // This method changes the length of the array.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var plants = ['broccoli', 'cauliflower', 'cabbage', 'kale', 'tomato'];
+  //
+  // console.log(plants.pop());
+  // // expected output: "tomato"
+  //
+  // console.log(plants);
+  // // expected output: Array ["broccoli", "cauliflower", "cabbage", "kale"]
+  //
+  // plants.pop();
+  //
+  // console.log(plants);
+  // // expected output: Array ["broccoli", "cauliflower", "cabbage"]
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.pop()
+  // OUR FUNCTION -- function pop(array);
+
+
+  //-------------RETURN VALUE---------------
+
+  // The removed element from the array; undefined if the array is empty.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function pop(array) {
+    var i = array.length;
+    var stoppingPoint = array.length - 1;
+    while (i > stoppingPoint) {
+      var returnElement = array.splice(-1, 1);
+      i--;
+    }
+    if (returnElement.length === 0) {
+      returnElement = undefined;
+    }
+    return returnElement;
+  }
+
+  tests({
+    'It should remove the last element from an array and return that element.': function() {
+      var animals = ['dog', 'cat', 'chicken'];
+      var result = pop(animals);
+      eq(result, 'chicken');
+    },
+    'It should reduce array.length pop was called upon by 1.': function() {
+      var animals = ['dog', 'cat', 'chicken'];
+      pop(animals);
+      eq(animals.length, 2);
+    },
+    'If it is called upon an empty array, it should return undefined.': function() {
+      var emptyArray = [];
+      var result = pop(emptyArray);
+      eq(result, undefined);
+    }
+  });
+</script>

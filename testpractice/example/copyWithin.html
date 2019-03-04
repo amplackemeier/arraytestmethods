@@ -1,0 +1,245 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // shallow copies part of an array to another location
+  // in the same array and returns it, without modifying its size.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  //   var array1 = ['a', 'b', 'c', 'd', 'e'];
+  //
+  // // copy to index 0 the element at index 3
+  // console.log(array1.copyWithin(0, 3, 4));
+  // // expected output: Array ["d", "b", "c", "d", "e"]
+  //
+  // // copy to index 1 all elements from index 3 to the end
+  // console.log(array1.copyWithin(1, 3));
+  // // expected output: Array ["d", "d", "e", "d", "e"]
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.copyWithin(target[, start[, end]])
+  // OUR FUNCTION -- copyWithin(array, target[, start[, end]]);
+
+
+
+  //-------------RETURN VALUE---------------
+
+  // The modified array.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function copyWithin(array, target, start, end) {
+    var initialNewArrayLoops = 0;
+    var newArray = [];
+    var startingPosition = 0;
+    var stoppingPosition = array.length;
+
+    if (arguments.length >= 2) {
+      if (target > array.length) {
+        return array;
+      }
+      if (target < 0) {
+        initialNewArrayLoops = array.length + target;
+        stoppingPosition = array.length - (target + array.length);
+      } else if (target >= 0) {
+        initialNewArrayLoops = target;
+        stoppingPosition = array.length - target;
+      }
+    }
+
+    if (start) {
+      if (start === NaN || start === null || start === undefined) {
+        startingPosition = 0;
+      } else if (start < 0) {
+        startingPosition = array.length + start;
+      } else if (start >= 0) {
+        startingPosition = start;
+      }
+      stoppingPosition = array.length;
+    }
+
+    if (end) {
+      if (end < 0) {
+        stoppingPosition = array.length + end;
+      } else if (end >= 0) {
+        stoppingPosition = end;
+      }
+    }
+
+    // Copies original array up until target position.
+    for (var i = 0; i < initialNewArrayLoops; i++) {
+      newArray.push(array[i]);
+    }
+
+    //Begins at target position
+    for (var i = startingPosition; i < stoppingPosition; i++) {
+      newArray.push(array[i]);
+    }
+
+    var remainderIfStart = array.length - newArray.length;
+    // need to add extra elements if we have start and arent enough to fill original array.length
+    if (start) {
+      if (remainderIfStart > 0) {
+        while (remainderIfStart > 0) {
+          newArray.push(array[array.length - remainderIfStart]);
+          remainderIfStart--;
+        }
+      }
+    }
+
+    //Puts newArray back into original array.
+    for (var i = 0; i < array.length; i++) {
+      if (i in array) {
+        array[i] = newArray[i];
+      } else {
+        delete array[i];
+      }
+    }
+
+    return array;
+  }
+
+
+  tests({
+    'It should return the array that it was called upon.': function() {
+      var testArray = [1, 2, 3];
+      var result = copyWithin(testArray);
+      eq(Array.isArray(result), true);
+      eq(result[0], 1);
+      eq(result[1], 2);
+      eq(result[2], 3);
+    },
+    'If target is provided without start, copyWithin should copy from the start (defaults to 0), and place beginning at target position.': function() {
+      var testArray1 = ['a', 'b', 'c', 'd', 'e'];
+      var testArray2 = ['a', 'b', 'c', 'd', 'e'];
+      var resultWithTarget = copyWithin(testArray1, 1);
+      var resultWithoutTarget = copyWithin(testArray2);
+      eq(resultWithTarget[0], 'a');
+      eq(resultWithTarget[1], 'a');
+      eq(resultWithTarget[2], 'b');
+      eq(resultWithTarget[3], 'c');
+      eq(resultWithTarget[4], 'd');
+      eq(resultWithoutTarget[0], 'a');
+      eq(resultWithoutTarget[1], 'b');
+      eq(resultWithoutTarget[2], 'c');
+      eq(resultWithoutTarget[3], 'd');
+      eq(resultWithoutTarget[4], 'e');
+    },
+    'If target is negative, the target position should be counted from the end of the array.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, -1);
+      eq(testArray[0], 'a');
+      eq(testArray[1], 'b');
+      eq(testArray[2], 'c');
+      eq(testArray[3], 'd');
+      eq(testArray[4], 'a');
+    },
+    'If target is greater than array.length, nothing should be copied.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, 6);
+      eq(testArray[0], 'a');
+      eq(testArray[1], 'b');
+      eq(testArray[2], 'c');
+      eq(testArray[3], 'd');
+      eq(testArray[4], 'e');
+    },
+    'If target is NaN, null, or undefined, target should be equal to zero.': function() {
+      var testArray1 = ['a', 'b', 'c', 'd', 'e'];
+      var testArray2 = ['a', 'b', 'c', 'd', 'e'];
+      var testArray3 = ['a', 'b', 'c', 'd', 'e'];
+      var notNumberResult = copyWithin(testArray1, NaN);
+      var nullResult = copyWithin(testArray2, null);
+      var undefinedResult = copyWithin(testArray3, undefined);
+      eq(notNumberResult[0], 'a');
+      eq(notNumberResult[1], 'b');
+      eq(notNumberResult[2], 'c');
+      eq(notNumberResult[3], 'd');
+      eq(notNumberResult[4], 'e');
+      eq(nullResult[0], 'a');
+      eq(nullResult[1], 'b');
+      eq(nullResult[2], 'c');
+      eq(nullResult[3], 'd');
+      eq(nullResult[4], 'e');
+      eq(undefinedResult[0], 'a');
+      eq(undefinedResult[1], 'b');
+      eq(undefinedResult[2], 'c');
+      eq(undefinedResult[3], 'd');
+      eq(undefinedResult[4], 'e');
+    },
+    'If optional start, it should start copying elements from start position.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, 0, 1);
+      eq(testArray[0], 'b');
+      eq(testArray[1], 'c');
+      eq(testArray[2], 'd');
+      eq(testArray[3], 'e');
+      eq(testArray[4], 'e');
+    },
+    'If target is positioned after start, the copied sequence will be trimmed to fit arr.length.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, 2, 1);
+      eq(testArray[0], 'a');
+      eq(testArray[1], 'b');
+      eq(testArray[2], 'b');
+      eq(testArray[3], 'c');
+      eq(testArray[4], 'd');
+      eq(testArray.length, 5);
+    },
+    'If optional start is negative, start position should be counted from end of array.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, 0, -1);
+      eq(testArray[0], 'e');
+      eq(testArray[1], 'b');
+      eq(testArray[2], 'c');
+      eq(testArray[3], 'd');
+      eq(testArray[4], 'e');
+    },
+    'If optional start is NaN, null, or undefined, it should be equal to zero.': function() {
+      var testArray1 = ['a', 'b', 'c', 'd', 'e'];
+      var testArray2 = ['a', 'b', 'c', 'd', 'e'];
+      var testArray3 = ['a', 'b', 'c', 'd', 'e'];
+      var resultNaN = copyWithin(testArray1, 0, NaN);
+      var resultnull = copyWithin(testArray2, 0, null);
+      var resultundefined = copyWithin(testArray3, 0, undefined);
+      eq(resultNaN[0], 'a');
+      eq(resultNaN[1], 'b');
+      eq(resultNaN[2], 'c');
+      eq(resultNaN[3], 'd');
+      eq(resultNaN[4], 'e');
+      eq(resultnull[0], 'a');
+      eq(resultnull[1], 'b');
+      eq(resultnull[2], 'c');
+      eq(resultnull[3], 'd');
+      eq(resultnull[4], 'e');
+      eq(resultundefined[0], 'a');
+      eq(resultundefined[1], 'b');
+      eq(resultundefined[2], 'c');
+      eq(resultundefined[3], 'd');
+      eq(resultundefined[4], 'e');
+    },
+    'If optional end, it should copy up to but not including end position.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, 0, 3, 4);
+      eq(testArray[0], 'd');
+      eq(testArray[1], 'b');
+      eq(testArray[2], 'c');
+      eq(testArray[3], 'd');
+      eq(testArray[4], 'e');
+    },
+    'If end is negative, it should be counted from end of array.': function() {
+      var testArray = ['a', 'b', 'c', 'd', 'e'];
+      copyWithin(testArray, 0, 3, -1);
+      eq(testArray[0], 'd');
+      eq(testArray[1], 'b');
+      eq(testArray[2], 'c');
+      eq(testArray[3], 'd');
+      eq(testArray[4], 'e');
+    },
+  });
+</script>

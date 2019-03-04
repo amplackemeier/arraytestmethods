@@ -1,0 +1,104 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // returns the last index at which a given
+  // element can be found in the array, or -1
+  // if it is not present. The array is searched backwards, starting at fromIndex.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var animals = ['Dodo', 'Tiger', 'Penguin', 'Dodo'];
+  //
+  // console.log(animals.lastIndexOf('Dodo'));
+  // // expected output: 3
+  //
+  // console.log(animals.lastIndexOf('Tiger'));
+  // // expected output: 1
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.lastIndexOf(searchElement[, fromIndex]);
+  // FUNCTION -- lastIndexOf(array, searchElement, [, fromIndex]);
+
+
+  //-------------RETURN VALUE---------------
+
+  // The last index of the element in the array; -1 if not found.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function lastIndexOf(array, searchElement, fromIndex) {
+    var startingIndex;
+    var arrayLength = array.length;
+
+    if (arguments.length < 3) {
+      startingIndex = arrayLength - 1;
+    }
+
+    if (arguments.length === 3) {
+      if (fromIndex < 0) {
+        startingIndex = arrayLength - 1 + fromIndex;
+      } else {
+        startingIndex = fromIndex;
+      }
+    }
+
+    for (var i = startingIndex; i >= 0; i--) {
+      if (searchElement === array[i]) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
+  tests({
+    'It should return the last index where the search element is found in the array, searching the array back to front.': function() {
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 3;
+      var result = lastIndexOf(testArray, searchElement);
+      eq(result, 3);
+    },
+    'It should return -1 if the search element doesnt exist in the array.': function() {
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 4;
+      var result = lastIndexOf(testArray, searchElement);
+      eq(result, -1);
+    },
+    'If fromIndex is not provided, it should start search at array.length - 1.': function() {
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 3;
+      var result = lastIndexOf(testArray, searchElement);
+      eq(result, 3);
+    },
+    'If fromIndex is provided, it should begin the search at fromIndex position in the array.': function() {
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 3;
+      var result = lastIndexOf(testArray, searchElement, 1);
+      eq(result, 0);
+    },
+    'If the fromIndex is greater than or equal to the length of the array, the whole array will be searched.': function() {
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 3;
+      var result = lastIndexOf(testArray, searchElement, 20);
+      eq(result, 3);
+    },
+    'If fromIndex is negative, the search should start at array.length + fromIndex.': function() {
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 3;
+      var result = lastIndexOf(testArray, searchElement, -2);
+      eq(result, 0);
+    },
+    'If this value is less than zero, it should return -1 and array should not be searched.': function() {
+      debugger;
+      var testArray = [3, 1, 2, 3];
+      var searchElement = 3;
+      var result = lastIndexOf(testArray, searchElement, -6);
+      eq(result, -1);
+    }
+  });
+</script>

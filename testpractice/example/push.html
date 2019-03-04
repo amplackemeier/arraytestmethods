@@ -1,0 +1,72 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // adds one or more elements to the end of an array
+  // and returns the new length of the array.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  //   var animals = ['pigs', 'goats', 'sheep'];
+  //
+  //   console.log(animals.push('cows'));
+  // // expected output: 4
+  //
+  //   console.log(animals);
+  // // expected output: Array ["pigs", "goats", "sheep", "cows"]
+  //
+  //   animals.push('chickens');
+  //
+  //   console.log(animals);
+  // // expected output: Array ["pigs", "goats", "sheep", "cows", "chickens"]
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.push(element1[, ...[, elementN]])
+  // OUR FUNCTION -- function push(array, element1[, ...[, elementN]])
+
+
+  //-------------RETURN VALUE---------------
+
+  // The new length property of the object upon which the method was called.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function push(array, elementN) {
+    for (var i = 1; i < arguments.length; i++) {
+      array[array.length] = arguments[i];
+    }
+    return array.length;
+  }
+
+  tests({
+    'It should accept an array, and return array.length at end of function.': function() {
+      var testArray = [1, 2, 3];
+      var result = push(testArray);
+      eq(result, 3);
+    },
+    'It should add provided element arguments to end of array and return new array.length.': function() {
+      var testArray = [1, 2, 3];
+      var ele1 = 4;
+      var result = push(testArray, ele1);
+      eq(result, 4);
+    },
+    'It should accept any number of element arguments.': function() {
+      var testArray = [1, 2, 3];
+      var ele1 = 4;
+      var ele2 = 'hello'
+      var ele3 = 5;
+      var result = push(testArray, ele1, ele2, ele3);
+      eq(result, 6);
+    },
+    'If no arguments are given it should return array.length.': function() {
+      var testArray = [1, 2, 3];
+      var result = push(testArray);
+      eq(result, 3);
+    }
+  });
+</script>

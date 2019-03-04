@@ -1,0 +1,125 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // Fills all the elements of an array from a start index to an end index
+  // with a static value. If the end index is not included, it will modify
+  // all the elements from the start index to the end of the array.
+  // It returns the modified array.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  // var array1 = [1, 2, 3, 4];
+  //
+  // // fill with 0 from position 2 until position 4
+  // console.log(array1.fill(0, 2, 4));
+  // // expected output: [1, 2, 0, 0]
+  //
+  // // fill with 5 from position 1
+  // console.log(array1.fill(5, 1));
+  // // expected output: [1, 5, 5, 5]
+  //
+  // console.log(array1.fill(6));
+  // // expected output: [6, 6, 6, 6]
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.fill(value[, start[, end]]);
+  // OUR FUNCTION -- fill(array, value[, start[, end]]);
+
+
+  //-------------RETURN VALUE---------------
+
+  // The modified array.
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function fill(array, value, start, end) {
+    var beginIndex = 0;
+    var endIndex = array.length;
+    if (arguments.length > 2) {
+      if (start < 0) {
+        beginIndex = array.length + start;
+      } else if (start > 0) {
+        beginIndex = start;
+      }
+    }
+
+    if (arguments.length > 3) {
+      if (end < 0) {
+        endIndex = array.length + end;
+      } else if (end > 0) {
+        endIndex = end;
+      }
+    }
+
+    for (var i = beginIndex; i < endIndex; i++) {
+      array[i] = value;
+    }
+    return array;
+  }
+
+
+  tests({
+    'It should fill all elements in an array with a provided value.': function() {
+      var testArray = [1, 2, 3];
+      fill(testArray, 0);
+      eq(testArray[0], 0);
+      eq(testArray[1], 0);
+      eq(testArray[2], 0);
+    },
+    'It should return the modified array, not a copy of it.': function() {
+      var testArray = [1];
+      fill(testArray, 0);
+      eq(testArray[0] === 1, false);
+      eq(testArray[0], 0);
+    },
+    'If start is provided it should start the fill there.': function() {
+      var testArray = [1, 2, 3];
+      var start = 1;
+      fill(testArray, 0, start);
+      eq(testArray[0], 1);
+      eq(testArray[1], 0);
+      eq(testArray[2], 0);
+    },
+    'If end is provided it should end at the position before end.': function() {
+      var testArray = [1, 2, 3, 4];
+      var start = 1;
+      var end = 3;
+      fill(testArray, 0, start, end);
+      eq(testArray[0], 1);
+      eq(testArray[1], 0);
+      eq(testArray[2], 0);
+      eq(testArray[3], 4);
+    },
+    'If start is negative, it is treated as length+start where length is the length of the array.': function() {
+      var testArray = [1, 2, 3];
+      var start = -1;
+      fill(testArray, 0, start);
+      eq(testArray[0], 1);
+      eq(testArray[1], 2);
+      eq(testArray[2], 0);
+    },
+    'If end is negative, it is treated as length+end.': function() {
+      var testArray = [1, 2, 3];
+      var start = 0;
+      var end = -1;
+      fill(testArray, 0, start, end);
+      eq(testArray[0], 0);
+      eq(testArray[1], 0);
+      eq(testArray[2], 3);
+    },
+    'If it gets passed an object, it will copy the reference and fill the array with references to that object.': function() {
+      var testObject = {
+        animal: 'dog'
+      };
+      var testArray = [1, 2, 3];
+      var result = fill(testArray, testObject, 0, 1);
+      eq(testArray[0].animal, 'dog');
+    }
+  });
+</script>

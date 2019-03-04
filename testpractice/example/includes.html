@@ -1,0 +1,118 @@
+<script src="../simpletest.js"></script>
+<script>
+  //-------------DESCRIPTION---------------
+
+  // determines whether an array includes a certain
+  // value among its entries, returning true or false as appropriate.
+
+
+
+  //-------------FUNCTION OUTPUT---------------
+
+  //   var array1 = [1, 2, 3];
+  //
+  //   console.log(array1.includes(2));
+  // // expected output: true
+  //
+  //   var pets = ['cat', 'dog', 'bat'];
+  //
+  //   console.log(pets.includes('cat'));
+  // // expected output: true
+  //
+  //   console.log(pets.includes('at'));
+  // // expected output: false
+
+
+  //-------------FUNCTION SIGNATURE---------------
+
+  // METHOD -- arr.includes(valueToFind[, fromIndex]);
+  // FUNCTION -- includes(array, valueToFind[, fromIndex]);
+
+
+  //-------------RETURN VALUE---------------
+
+  // True or false
+
+
+  // -------------FUNCTION BEING TESTED:------------
+
+  function includes(array, valueToFind, fromIndex) {
+    var startingIndex;
+    if (arguments.length === 3) {
+      if (fromIndex < 0) {
+        startingIndex = array.length + fromIndex;
+      } else {
+        startingIndex = fromIndex;
+      }
+    }
+    if (arguments.length < 3) {
+      startingIndex = 0;
+    }
+    for (var i = startingIndex; i < array.length; i++) {
+      if (array[i] === valueToFind) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  tests({
+    'It should return true if valueToFind is included in the array.': function() {
+      var testArray = [1, 2, 3];
+      var valueToFind = 2;
+      var result = includes(testArray, valueToFind);
+      eq(result, true);
+    },
+    'It should return false if valueToFind is not in the array.': function() {
+      var testArray = [1, 2, 3];
+      var valueToFind = 4;
+      var result = includes(testArray, valueToFind);
+      eq(result, false);
+    },
+    'If no fromIndex, it should begin search at array[0].': function() {
+      var testArray = [1, 2, 3];
+      var valueToFind = 1;
+      var result = includes(testArray, valueToFind);
+      eq(result, true);
+    },
+    'If fromIndex, it should begin search at that position.': function() {
+      var testArray = [1, 2, 3];
+      var valueToFind = 2;
+      var result1 = includes(testArray, valueToFind, 1);
+      var result2 = includes(testArray, valueToFind, 2);
+      eq(result1, true);
+      eq(result2, false);
+    },
+    'If fromIndex is negative, it should begin search at array.length + fromIndex position.': function() {
+      var testArray = [1, 2, 3];
+      var valueToFind1 = 1;
+      var valueToFind2 = 2;
+      var valueToFind3 = 3;
+      var result1 = includes(testArray, valueToFind1, -1);
+      var result2 = includes(testArray, valueToFind2, -1);
+      var result3 = includes(testArray, valueToFind3, -1);
+      eq(result1, false);
+      eq(result2, false);
+      eq(result3, true);
+    },
+    '+0 and -0 in array and valueToFind should both be equal to 0.': function() {
+      var testArray0 = [0];
+      var testArray1 = [+0];
+      var testArray2 = [-0];
+      var result0Plus = includes(testArray0, -0);
+      var result0Negative = includes(testArray0, +0);
+      var result1 = includes(testArray1, 0);
+      var result2 = includes(testArray2, 0);
+      eq(result0Plus, true);
+      eq(result0Negative, true);
+      eq(result1, true);
+      eq(result2, true);
+    },
+    'False should not be equal to zero in array or valueToFind.': function() {
+      var testArray = [false];
+      var result = includes(testArray, 0);
+      eq(result, false);
+    }
+  });
+</script>
